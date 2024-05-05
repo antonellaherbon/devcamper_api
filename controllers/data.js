@@ -9,7 +9,7 @@ exports.getData = async (req,res, next) => {
         const data = await Data.find();
         res.status(200).json({success: true,count: data.length, data: data});
     } catch (error) {
-        res.status(400).json({success: false});
+        next(error);
     }
 };
 
@@ -27,14 +27,9 @@ exports.getSingleData = async (req, res, next) => {
                 404)
             );
         }
-
         res.status(200).json({ success: true, data: singleData });
     } catch (error) {
-        // res.status(400).json({ success: false });
-        next(
-            new ErrorResponse(`Data not found with id of ${req.params.id}`,
-            404)
-        );
+        next(error);
     }
 };
 
@@ -51,7 +46,7 @@ exports.createData = async (req,res, next) => {
             data: data
         });
     } catch (error) {
-        res.status(400).json({success: false});
+        next(error);
     }
 };
 
@@ -67,12 +62,14 @@ exports.updateData = async (req,res, next) => {
         });
     
         if (!singleData){
-            return res.status(400).json({success: false});
-    
+            return next(
+                new ErrorResponse(`Data not found with id of ${req.params.id}`,
+                404)
+            );
         }
         res.status(200).json({success: true, data: singleData});
     } catch (error) {
-        res.status(400).json({success: false})
+        next(error);
     }
 };
 
@@ -85,12 +82,14 @@ exports.deleteData = async (req,res, next) => {
         const singleData = await Data.findByIdAndDelete(req.params.id);
     
         if (!singleData){
-            return res.status(400).json({success: false});
-    
+            return next(
+                new ErrorResponse(`Data not found with id of ${req.params.id}`,
+                404)
+            );
         }
         res.status(200).json({success: true, data: {}});
     } catch (error) {
-        res.status(400).json({success: false})
+        next(error);
     }
 };
 
