@@ -1,52 +1,97 @@
+const Data = require('../modals/Data');
+const ErrorResponse = require ('../utils/errorResponse');
 //@desc  Get All Data
 //@route GET  /api/v1/data
 //@access Public 
 
-exports.getData = (req,res, next) => {
-
-    res
-    .status(200)
-    .json({success: true, msg: 'show all data'});
+exports.getData = async (req,res, next) => {
+    try {
+        const data = await Data.find();
+        res.status(200).json({success: true,count: data.length, data: data});
+    } catch (error) {
+        res.status(400).json({success: false});
+    }
 };
 
 //@desc  Get Single Data
 //@route GET  /api/v1/data/:id
 //@access Public 
 
-exports.getSingleData = (req,res, next) => {
-    res
-    .status(200)
-    .json({success: true, msg: `show ${req.params.id}`});
+exports.getSingleData = async (req, res, next) => {
+    try {
+        const singleData = await Data.findById(req.params.id);
+
+        if (!singleData) {
+            return next(
+                new ErrorResponse(`Data not found with id of ${req.params.id}`,
+                404)
+            );
+        }
+
+        res.status(200).json({ success: true, data: singleData });
+    } catch (error) {
+        // res.status(400).json({ success: false });
+        next(
+            new ErrorResponse(`Data not found with id of ${req.params.id}`,
+            404)
+        );
+    }
 };
 
 //@desc  Create Data
 //@route POST  /api/v1/data
 //@access Private 
 
-exports.createData = (req,res, next) => {
-    res
-    .status(200)
-    .json({success: true, msg: 'create new'});
+exports.createData = async (req,res, next) => {
+    try {
+        const data = await Data.create(req.body);
+        console.log(req.body)
+        res.status(201).json({
+            success: true,
+            data: data
+        });
+    } catch (error) {
+        res.status(400).json({success: false});
+    }
 };
 
 //@desc  Update Data
 //@route PUT  /api/v1/data/:id
 //@access Private 
 
-exports.updateData = (req,res, next) => {
-    res
-    .status(200)
-    .json({success: true, msg: `update ${req.params.id}`});
+exports.updateData = async (req,res, next) => {
+    try {
+        const singleData = await Data.findByIdAndUpdate(req.params.id, req.body,{
+            new: true,
+            runValidators: true 
+        });
+    
+        if (!singleData){
+            return res.status(400).json({success: false});
+    
+        }
+        res.status(200).json({success: true, data: singleData});
+    } catch (error) {
+        res.status(400).json({success: false})
+    }
 };
 
 //@desc  Delete Data
 //@route DELETE  /api/v1/data/:id
 //@access Private 
 
-exports.deleteData = (req,res, next) => {
-    res
-    .status(200)
-    .json({success: true, msg: `delete ${req.params.id}`});
+exports.deleteData = async (req,res, next) => {
+    try {
+        const singleData = await Data.findByIdAndDelete(req.params.id);
+    
+        if (!singleData){
+            return res.status(400).json({success: false});
+    
+        }
+        res.status(200).json({success: true, data: {}});
+    } catch (error) {
+        res.status(400).json({success: false})
+    }
 };
 
 
