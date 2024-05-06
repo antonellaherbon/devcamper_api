@@ -10,7 +10,6 @@ exports.getData = asyncHandler(async (req,res, next) => {
         const data = await Data.find();
         res.status(200).json({success: true,count: data.length, data: data});
         
-        next(error);
 });
 
 //@desc  Get Single Data
@@ -28,7 +27,6 @@ exports.getSingleData = asyncHandler( async (req, res, next) => {
         };
         res.status(200).json({ success: true, data: singleData });
         
-        next(error);
 });
 
 //@desc  Create Data
@@ -43,7 +41,6 @@ exports.createData = asyncHandler( async (req,res, next) => {
             data: data
         });
 
-        next(error);
 });
 
 //@desc  Update Data
@@ -64,7 +61,6 @@ exports.updateData = asyncHandler( async (req,res, next) => {
         };
 
         res.status(200).json({success: true, data: singleData});
-        next(error);
 });
 
 //@desc  Delete Data
@@ -82,7 +78,6 @@ exports.deleteData = asyncHandler( async (req,res, next) => {
         };
 
         res.status(200).json({success: true, data: {}});
-        next(error);
 });
 
 

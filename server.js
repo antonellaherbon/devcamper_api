@@ -1,13 +1,14 @@
 const express = require('express');
 const dotenv = require('dotenv');
+dotenv.config({path: './config/config.env'});
 // const logger = require('./middleware/logger');
 const morgan = require('morgan');
 const data = require('./routes/data');
 const dbConnecttion = require('./config/db');
 const errorHandler = require('./middleware/error');
 
+
 //load config file
-dotenv.config({path: './config/config.env'});
 dbConnecttion();
 
 const app = express();
@@ -21,6 +22,7 @@ if(process.env.NODE_ENV === 'development'){
 
 app.use('/api/v1/data', data);
 app.use(errorHandler);
+
 
 const PORT = process.env.PORT || 5000;
 
