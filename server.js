@@ -1,7 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
 dotenv.config({path: './config/config.env'});
-// const logger = require('./middleware/logger');
 const morgan = require('morgan');
 const data = require('./routes/data');
 const dbConnecttion = require('./config/db');
