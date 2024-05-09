@@ -5,7 +5,12 @@ const { getData,
     getSingleData, 
     createData, 
     updateData, 
-    deleteData} = require('../controllers/data');
+    deleteData,
+    getDataInRadius} = require('../controllers/data');
+
+router.route('/radius/:zipcode/:distance')
+.get(getDataInRadius);
+
 
 router.route('/')
 .get(getData)
@@ -15,7 +20,5 @@ router.route('/:id')
 .get(getSingleData)
 .put(updateData)
 .delete(deleteData);
-
-
 
 module.exports =router;

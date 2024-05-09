@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require ('slugify');
 const geocoder = require('../utils/geocoder');
+const opencage = require('opencage-api-client');
 
 const DataSchema = new mongoose.Schema({
     name: {
@@ -110,12 +111,12 @@ DataSchema.pre('save', async function(next){
     const loc = await geocoder.geocode(this.address);
     this.location = {
         type: 'Point',
-        coordinates: [-71.1038666, 42.3508609],
-        // coordinates: [Number(loc[0].longitude), Number(loc[0].latitude)],
-        formattedAddress: loc[0].formattedAddress,
+        coordinates: [loc[0].longitude, loc[0].latitude],
+        formattedAddress: loc[0].formatted,
         street: loc[0].streetName,
         city: loc[0].city,
-        state: loc[0].stateCode,
+        state: loc[0].state, //statecode no funciona, arreglar
+        // stateCode: 
         zipcode: loc[0].zipcode,
         country: loc[0].countryCode
     }
