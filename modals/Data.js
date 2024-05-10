@@ -101,6 +101,9 @@ const DataSchema = new mongoose.Schema({
     }
 });
 
+DataSchema.set('toJSON', { virtuals: true });
+DataSchema.set('toObject', { virtuals: true });
+
 DataSchema.pre('save', function(next){
     this.slug = slugify(this.name, { lower: true });    
     next();
@@ -124,6 +127,20 @@ DataSchema.pre('save', async function(next){
     //do not save address
     this.address = undefined;
     next();
+})
+
+//Cascade delete courses when a bootcamp is deleted
+DataSchema.pre('deleteOne', {document: true, query: false}, async function(next){
+    console.log(`courses being removed from bootcamp ${this._id}`);
+    await this.model('Course').deleteMany({ bootcamp: this._id});
+    next();
+})
+//Reverse populate with virtuals
+DataSchema.virtual('courses', {
+    ref: 'Course',
+    localField: '_id',
+    foreignField: 'bootcamp',
+    justOne: false
 })
 
 module.exports = mongoose.model('Data', DataSchema);

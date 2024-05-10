@@ -27,7 +27,7 @@ exports.getData = asyncHandler(async (req,res, next) => {
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 
     //finding resource
-    query = Data.find(JSON.parse(queryStr))
+    query = Data.find(JSON.parse(queryStr)).populate('courses');
     
     //Select fields
     if (req.query.select){
@@ -133,14 +133,16 @@ exports.updateData = asyncHandler( async (req,res, next) => {
 //@access Private 
 
 exports.deleteData = asyncHandler( async (req,res, next) => {
-        const singleData = await Data.findByIdAndDelete(req.params.id);
-    
+        const singleData = await Data.findById(req.params.id);
+
         if (!singleData){
             return next(
                 new ErrorResponse(`Data not found with id of ${req.params.id}`,
                 404)
             );
         };
+
+        await singleData.deleteOne();
 
         res.status(200).json({success: true, data: {}});
 });

@@ -1,5 +1,4 @@
 const express = require('express')
-const router = express.Router();
 
 const { getData, 
     getSingleData, 
@@ -7,6 +6,13 @@ const { getData,
     updateData, 
     deleteData,
     getDataInRadius} = require('../controllers/data');
+    
+    //Include other resource routers
+const courseRouter = require('./courses');
+    
+const router = express.Router();
+//Re-route into other resource routers
+router.use('/:dataId/courses', courseRouter);
 
 router.route('/radius/:zipcode/:distance')
 .get(getDataInRadius);

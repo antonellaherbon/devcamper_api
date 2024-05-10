@@ -2,9 +2,11 @@ const express = require('express');
 const dotenv = require('dotenv');
 dotenv.config({path: './config/config.env'});
 const morgan = require('morgan');
-const data = require('./routes/data');
 const dbConnecttion = require('./config/db');
 const errorHandler = require('./middleware/error');
+
+const data = require('./routes/data');
+const courses = require('./routes/courses');
 
 
 //load config file
@@ -20,6 +22,8 @@ if(process.env.NODE_ENV === 'development'){
 }
 
 app.use('/api/v1/data', data);
+app.use('/api/v1/courses', courses);
+
 app.use(errorHandler);
 
 
