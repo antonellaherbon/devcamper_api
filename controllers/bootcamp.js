@@ -1,14 +1,14 @@
-const Data = require('../modals/Data');
+const Bootcamp = require('../modals/Bootcamp');
 const ErrorResponse = require ('../utils/errorResponse');
 const asyncHandler = require('../middleware/async')
 const geocoder = require('../utils/geocoder');
 const colors = require('colors');
 
-//@desc  Get All Data
-//@route GET  /api/v1/data
+//@desc  Get All bootcamps
+//@route GET  /api/v1/bootcamps
 //@access Public 
 
-exports.getData = asyncHandler(async (req,res, next) => {
+exports.getBootcamps = asyncHandler(async (req,res, next) => {
     let query;
 
     //copy req.query
@@ -27,7 +27,7 @@ exports.getData = asyncHandler(async (req,res, next) => {
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 
     //finding resource
-    query = Data.find(JSON.parse(queryStr)).populate('courses');
+    query = Bootcamp.find(JSON.parse(queryStr)).populate('courses');
     
     //Select fields
     if (req.query.select){
@@ -48,12 +48,12 @@ exports.getData = asyncHandler(async (req,res, next) => {
     const limit = parseInt(req.query.limit, 10) || 25;
     const startIndex = (page-1) * limit;
     const endIndex = page * limit;
-    const total = await Data.countDocuments();
+    const total = await Bootcamp.countDocuments();
 
     query = query.skip(startIndex).limit(limit);
 
     //executing query
-    const data = await query;
+    const bootcamp = await query;
 
     //Pagination result
     const pagination = {};
@@ -72,86 +72,86 @@ exports.getData = asyncHandler(async (req,res, next) => {
     }
 
     res.status(200).json({success: true,
-        count: data.length,
+        count: bootcamp.length,
         pagination,
-        data: data});
+        data: bootcamp});
 });
 
-//@desc  Get Single Data
-//@route GET  /api/v1/data/:id
+//@desc  Get Single bootcamp
+//@route GET  /api/v1/bootcamps/:id
 //@access Public 
 
-exports.getSingleData = asyncHandler( async (req, res, next) => {
-        const singleData = await Data.findById(req.params.id);
+exports.getBootcamp = asyncHandler( async (req, res, next) => {
+        const bootcamp = await Bootcamp.findById(req.params.id);
 
-        if (!singleData) {
+        if (!bootcamp) {
             return next(
-                new ErrorResponse(`Data not found with id of ${req.params.id}`,
+                new ErrorResponse(`bootcamp not found with id of ${req.params.id}`,
                 404)
             );
         };
-        res.status(200).json({ success: true, data: singleData });
+        res.status(200).json({ success: true, data: bootcamp });
         
 });
 
-//@desc  Create Data
-//@route POST  /api/v1/data
+//@desc  Create bootcamps
+//@route POST  /api/v1/datbootcampsa
 //@access Private 
 
-exports.createData = asyncHandler( async (req,res, next) => {
-        const data = await Data.create(req.body);
+exports.createBootcamp = asyncHandler( async (req,res, next) => {
+        const bootcamp = await Bootcamp.create(req.body);
         console.log(req.body)
         res.status(201).json({
             success: true,
-            data: data
+            data: bootcamp
         });
 
 });
 
-//@desc  Update Data
-//@route PUT  /api/v1/data/:id
+//@desc  Update bootcamp
+//@route PUT  /api/v1/bootcamps/:id
 //@access Private 
 
-exports.updateData = asyncHandler( async (req,res, next) => {
-        const singleData = await Data.findByIdAndUpdate(req.params.id, req.body,{
+exports.updateBootcamp = asyncHandler( async (req,res, next) => {
+        const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body,{
             new: true,
             runValidators: true 
         });
     
-        if (!singleData){
+        if (!bootcamp){
             return next(
-                new ErrorResponse(`Data not found with id of ${req.params.id}`,
+                new ErrorResponse(`bootcamp not found with id of ${req.params.id}`,
                 404)
             );
         };
 
-        res.status(200).json({success: true, data: singleData});
+        res.status(200).json({success: true, data: bootcamp});
 });
 
-//@desc  Delete Data
-//@route DELETE  /api/v1/data/:id
+//@desc  Delete bootcamp
+//@route DELETE  /api/v1/bootcamps/:id
 //@access Private 
 
-exports.deleteData = asyncHandler( async (req,res, next) => {
-        const singleData = await Data.findById(req.params.id);
+exports.deleteBootcamp = asyncHandler( async (req,res, next) => {
+        const bootcamp = await Bootcamp.findById(req.params.id);
 
-        if (!singleData){
+        if (!bootcamp){
             return next(
-                new ErrorResponse(`Data not found with id of ${req.params.id}`,
+                new ErrorResponse(`bootcamp not found with id of ${req.params.id}`,
                 404)
             );
         };
 
-        await singleData.deleteOne();
+        await bootcamp.deleteOne();
 
         res.status(200).json({success: true, data: {}});
 });
 
-//@desc  Get Data within a radius
-//@route GET  /api/v1/data/radius/:zipcode/:distance
+//@desc  Get bootcamps within a radius
+//@route GET  /api/v1/bootcamps/radius/:zipcode/:distance
 //@access Private 
 
-exports.getDataInRadius = asyncHandler( async (req,res, next) => {
+exports.getBootcampInRadius = asyncHandler( async (req,res, next) => {
     const { zipcode, distance } = req.params;
 
     //Get latitude and longitud from geocoder
@@ -164,14 +164,14 @@ exports.getDataInRadius = asyncHandler( async (req,res, next) => {
     //Earth Radius = 3,963 miles = 6,378 km
     const radius = distance / 3963;
 
-    const data = await Data.find({
+    const bootcamp = await Bootcamp.find({
         location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } }
     });
 
     res.status(200).json({
         success: true,
-        count: data.length,
-        data: data
+        count: bootcamp.length,
+        data: bootcamp
     });
 });
 

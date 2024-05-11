@@ -3,7 +3,7 @@ const slugify = require ('slugify');
 const geocoder = require('../utils/geocoder');
 const opencage = require('opencage-api-client');
 
-const DataSchema = new mongoose.Schema({
+const BootcampSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Please add a name'],
@@ -101,16 +101,16 @@ const DataSchema = new mongoose.Schema({
     }
 });
 
-DataSchema.set('toJSON', { virtuals: true });
-DataSchema.set('toObject', { virtuals: true });
+BootcampSchema.set('toJSON', { virtuals: true });
+BootcampSchema.set('toObject', { virtuals: true });
 
-DataSchema.pre('save', function(next){
+BootcampSchema.pre('save', function(next){
     this.slug = slugify(this.name, { lower: true });    
     next();
 });
 
 //geocode and create location
-DataSchema.pre('save', async function(next){
+BootcampSchema.pre('save', async function(next){
     const loc = await geocoder.geocode(this.address);
     this.location = {
         type: 'Point',
@@ -130,17 +130,17 @@ DataSchema.pre('save', async function(next){
 })
 
 //Cascade delete courses when a bootcamp is deleted
-DataSchema.pre('deleteOne', {document: true, query: false}, async function(next){
+BootcampSchema.pre('deleteOne', {document: true, query: false}, async function(next){
     console.log(`courses being removed from bootcamp ${this._id}`);
     await this.model('Course').deleteMany({ bootcamp: this._id});
     next();
 })
 //Reverse populate with virtuals
-DataSchema.virtual('courses', {
+BootcampSchema.virtual('courses', {
     ref: 'Course',
     localField: '_id',
     foreignField: 'bootcamp',
     justOne: false
 })
 
-module.exports = mongoose.model('Data', DataSchema);
+module.exports = mongoose.model('Bootcamp', BootcampSchema);

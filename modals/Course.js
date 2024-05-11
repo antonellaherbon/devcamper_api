@@ -1,5 +1,5 @@
 const mongoose = require ('mongoose');
-const Data = require('./Data');
+const Bootcamp = require('./Bootcamp');
 
 const CourseSchema = new mongoose.Schema({
     title: {
@@ -34,7 +34,7 @@ const CourseSchema = new mongoose.Schema({
     },
     bootcamp: {
         type: mongoose.Schema.ObjectId,
-        ref: 'Data',
+        ref: 'Bootcamp',
         required: true
     },
 });
@@ -57,7 +57,7 @@ CourseSchema.statics.getAverageCost = async function(bootcampId){
     ]);
 
     try {
-        await this.model('Data').findByIdAndUpdate(bootcampId, {
+        await this.model('Bootcamp').findByIdAndUpdate(bootcampId, {
             averageCost: Math.ceil(obj[0].averageCost / 10) * 10
         });
     } catch (error) {

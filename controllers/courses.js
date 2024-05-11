@@ -1,19 +1,19 @@
 const Course = require('../modals/Course');
 const ErrorResponse = require ('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
-const Data = require('../modals/Data');
+const Bootcamp = require('../modals/Bootcamp');
 
 
 //@desc  Get All Courses
 //@route GET  /api/v1/courses
-//@route GET  /api/v1/:dataId/courses
+//@route GET  /api/v1/:bootcampId/courses
 //@access Public 
 
 exports.getCourses = asyncHandler (async (req, res, next) => {
     let query;
 
-    if (req.params.dataId){
-        query = Course.find({ bootcamp: req.params.dataId })
+    if (req.params.bootcampId){
+        query = Course.find({ bootcamp: req.params.bootcampId })
     }else{
         query = Course.find().populate({
             path: 'bootcamp',
@@ -53,16 +53,16 @@ exports.getSingleCourse = asyncHandler (async (req, res, next) => {
 });
 
 //@desc  Add a course
-//@route POST  /api/v1/data/:dataId/courses
+//@route POST  /api/v1/bootcamps/:bootcampId/courses
 //@access Private 
 
 exports.addCourse = asyncHandler (async (req, res, next) => {
-    req.body.bootcamp = req.params.dataId;
+    req.body.bootcamp = req.params.bootcampId;
     
-    const data = await Data.findById(req.params.dataId);
+    const bootcamp = await Bootcamp.findById(req.params.bootcampId);
 
-    if (!data){
-        return next(new ErrorResponse(`No course with the id of ${req.params.dataId}`), 
+    if (!bootcamp){
+        return next(new ErrorResponse(`No course with the id of ${req.params.bootcampId}`), 
         404)
     };
 

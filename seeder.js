@@ -6,7 +6,7 @@ dotenv.config({path: './config/config.env'});
 
 const geocoder = require('./utils/geocoder');
 //load models
-const Data = require('./modals/Data');
+const Bootcamp = require('./modals/Bootcamp');
 const Course = require('./modals/Course');
 
 const colors = require('colors')
@@ -21,11 +21,11 @@ const courses = JSON.parse(fs.readFileSync(`${__dirname}/_data/courses.json`, 'u
 //import into db
 const importData = async () => {
     try {
-        console.log('Data initializing...'.green.inverse);
-        await Data.create(bootcamps);
+        console.log('Bootcamps initializing...'.green.inverse);
+        await Bootcamp.create(bootcamps);
         await Course.create(courses);
 
-        console.log('Data imported...'.green.inverse);
+        console.log('Bootcamps imported...'.green.inverse);
         process.exit();
     } catch (error) {
         console.error(error);
@@ -35,10 +35,10 @@ const importData = async () => {
 //delete data
 const deleteData = async () => {
     try {
-        await Data.deleteMany();
+        await Bootcamp.deleteMany();
         await Course.deleteMany();
 
-        console.log("Data destroyed...".red.inverse);
+        console.log("Bootcamps destroyed...".red.inverse);
         process.exit();
     } catch (error) {
         console.error(error);

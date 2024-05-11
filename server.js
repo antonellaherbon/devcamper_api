@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const dbConnecttion = require('./config/db');
 const errorHandler = require('./middleware/error');
 
-const data = require('./routes/data');
+const bootcamp = require('./routes/bootcamp');
 const courses = require('./routes/courses');
 
 
@@ -21,7 +21,7 @@ if(process.env.NODE_ENV === 'development'){
     app.use(morgan('dev'));
 }
 
-app.use('/api/v1/data', data);
+app.use('/api/v1/bootcamps', bootcamp);
 app.use('/api/v1/courses', courses);
 
 app.use(errorHandler);
