@@ -8,6 +8,8 @@ const errorHandler = require('./middleware/error');
 const fileupload = require('express-fileupload');
 const bootcamp = require('./routes/bootcamp');
 const courses = require('./routes/courses');
+const auth = require('./routes/auth');
+
 
 
 //load config file
@@ -30,6 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/v1/bootcamps', bootcamp);
 app.use('/api/v1/courses', courses);
+app.use('/api/v1/auth', auth);
 
 app.use(errorHandler);
 
