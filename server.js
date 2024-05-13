@@ -9,6 +9,7 @@ const fileupload = require('express-fileupload');
 const bootcamp = require('./routes/bootcamp');
 const courses = require('./routes/courses');
 const auth = require('./routes/auth');
+const cookieParser = require('cookie-parser');
 
 
 
@@ -18,6 +19,9 @@ dbConnecttion();
 const app = express();
 
 app.use(express.json());
+
+//cookie parser
+app.use(cookieParser());
 
 // dev logging middleware
 if(process.env.NODE_ENV === 'development'){
