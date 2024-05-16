@@ -8,6 +8,7 @@ const geocoder = require('./utils/geocoder');
 //load models
 const Bootcamp = require('./modals/Bootcamp');
 const Course = require('./modals/Course');
+const User = require('./modals/User');
 
 const colors = require('colors')
 //connect to db
@@ -16,16 +17,19 @@ mongoose.connect(process.env.MONGODB);
 //read Json files
 const bootcamps = JSON.parse(fs.readFileSync(`${__dirname}/_data/bootcamps.json`, 'utf-8'));
 const courses = JSON.parse(fs.readFileSync(`${__dirname}/_data/courses.json`, 'utf-8'));
+const users = JSON.parse(fs.readFileSync(`${__dirname}/_data/users.json`, 'utf-8'));
 
 
 //import into db
 const importData = async () => {
     try {
-        console.log('Bootcamps initializing...'.green.inverse);
+        console.log('Data initializing...'.green.inverse);
         await Bootcamp.create(bootcamps);
         await Course.create(courses);
+        await User.create(users);
 
-        console.log('Bootcamps imported...'.green.inverse);
+
+        console.log('Data imported...'.green.inverse);
         process.exit();
     } catch (error) {
         console.error(error);
@@ -37,8 +41,9 @@ const deleteData = async () => {
     try {
         await Bootcamp.deleteMany();
         await Course.deleteMany();
+        await User.deleteMany();
 
-        console.log("Bootcamps destroyed...".red.inverse);
+        console.log("Data destroyed...".red.inverse);
         process.exit();
     } catch (error) {
         console.error(error);
