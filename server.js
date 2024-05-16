@@ -8,6 +8,7 @@ const errorHandler = require('./middleware/error');
 const fileupload = require('express-fileupload');
 const bootcamp = require('./routes/bootcamp');
 const courses = require('./routes/courses');
+const users = require('./routes/users');
 const auth = require('./routes/auth');
 const cookieParser = require('cookie-parser');
 
@@ -37,6 +38,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/v1/bootcamps', bootcamp);
 app.use('/api/v1/courses', courses);
 app.use('/api/v1/auth', auth);
+app.use('/api/v1/users', users);
+
 
 app.use(errorHandler);
 
