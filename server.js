@@ -10,6 +10,12 @@ const bootcamp = require('./routes/bootcamp');
 const courses = require('./routes/courses');
 const users = require('./routes/users');
 const reviews = require('./routes/reviews');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const xss = require('xss-clean');
+const rateLimit = require('express-rate-limit');
+const hpp = require('hpp');
+const cors = require('cors');
 const auth = require('./routes/auth');
 const cookieParser = require('cookie-parser');
 
@@ -32,6 +38,29 @@ if(process.env.NODE_ENV === 'development'){
 
 //file upload
 app.use(fileupload());
+
+//sanitize data
+app.use(mongoSanitize());
+
+//set security headers
+app.use(helmet());
+
+//prevent XSS attacks
+app.use(xss());
+
+//enable CORS
+app.use(cors());
+
+//rate limiting
+const limiter = rateLimit({
+    windowMs: 10 * 60 * 1000, //10 mns
+    max: 100
+});
+
+app.use(limiter);
+
+//prevent http param pollution
+app.use(hpp());
 
 //set static folder
 app.use(express.static(path.join(__dirname, 'public')));
